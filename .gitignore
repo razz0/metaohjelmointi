@@ -1,0 +1,13 @@
+*.log
+*.pot
+*.pyc
+*.class
+
+.aux
+.bbl
+.blg
+.div
+.out
+.toc
+.metadata
+.idea/*
