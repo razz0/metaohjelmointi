@@ -9,5 +9,8 @@
 *.div
 *.out
 *.toc
+*.pyg
+*.gz
+
 .metadata
 .idea/*

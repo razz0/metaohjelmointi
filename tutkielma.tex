@@ -11,15 +11,16 @@
 \usepackage{lmodern}
 \usepackage{microtype}
 %\usepackage[table,xcdraw]{xcolor}    % loads also »colortbl«
+\usepackage{listings}
+\usepackage{minted}
 \usepackage{amsfonts,amsmath,amssymb,amsthm,booktabs,enumitem,graphicx}
 \usepackage{tocloft}
 %\usepackage{relsize}
 \usepackage[pdftex,hidelinks]{hyperref}
 \usepackage[title]{appendix}
-\usepackage{tabularx}
+%\usepackage{tabularx}
 \usepackage[table]{xcolor}    % loads also »colortbl«
 %\usepackage{float}
-\usepackage{listings}
 
 %\listfiles
 
@@ -58,6 +59,11 @@
     \def\btxurldatecomment#1{ [#1]}%
 }
 
+%\addto\captionsfinnish{
+\renewcommand{\lstlistingname}{Listaus}
+\renewcommand{\lstlistlistingname}{Listaukset}
+%}
+
 % --- Theorem environment definitions ---
 \newtheorem{lau}{Lause}
 \newtheorem{lem}[lau]{Lemma}
@@ -83,7 +89,7 @@
 \title{Metaohjelmointi Python-kielellä}
 \author{Mikko Koho}
 \date{\today}
-\level{Seminaariteksti}
+\level{Seminaarityö}
 
 \abstract{Tiivistelmä.
 }
@@ -134,20 +140,26 @@ Ensimmäinen Python-kielen versio julkaistu 1991 [TODO: lähde]. Python-kielest�
 
 Pythonin suosio on kasvanut tasaisesti ja se on nykyään käytetyin kieli ohjelmoinnin perusteiden opetukseen Yhdysvaltojen yliopistoissa \cite{python-teaching}.
 
-Python-ohjelmakoodia voidaan kääntää useilla eri kääntäjillä \cite{martelli2006python}. Käytetyin kääntäjä on CPython (Classic Python), joka kääntää alkuperäisen koodin Python-tavukoodiksi. Muita suosittuja kääntäjiä ovat Java-tavukoodiksi kääntävä Jython sekä IronPython, joka kääntää Python-koodia .NET-ympäristön käyttämäksi CIL-tavukoodiksi. PyPy on Python-kielellä toteutettu useissa eri ympäristöissä toimiva suoraan konekielelle koodia kääntävä ajonaikainen (just-in-time) kääntäjä.
+Python-ohjelmakoodia voidaan kääntää useilla eri kääntäjillä \cite{martelli2006python}. Käytetyin kääntäjä on CPython (Classic Python), joka kääntää alkuperäisen koodin Python-tavukoodiksi. Muita suosittuja kääntäjiä ovat Java-tavukoodiksi kääntävä Jython sekä IronPython, joka kääntää Python-koodia .NET-ympäristön käyttämäksi CIL-tavukoodiksi. PyPy on Python-kielellä toteutettu useissa eri ympäristöissä toimiva suoraan konekielelle koodia kääntävä ajonaikainen (just-in-time) kääntäjä. PyPy on toteutettu RPython-kielellä, joka on Python-kielen osajoukko.
+
+Tässä luvussa käydään läpi Python-kielen perusteet.
 
 \subsection{Pythonin syntaksi}
 
 Python ohjelma koostuu loogisista riveistä, jotka ovat yhden tai useamman ''fyysisen'' rivin mittaisia. \cite{martelli2006python}. Loogisten rivien päättämiseen ei käytetä mitään merkkiä. Rivien sisennyksen perusteella erotetaan ohjelmakoodin lohkot toisistaan. Suositeltu tapa sisentää on käyttää ensimmäisen tason sisentämiseen 4 välilyöntiä ja seuraavaan 8 ja niin edelleen \cite{pep8}. 
 
-Tässä luvussa käydään läpi Python-kielen perusteet.
-
 \subsection{Operaattorit}
 
 \subsection{Muuttujat}
 
-Python on dynaamisesti tyypitetty kieli eli muuttujien arvon tyyppiä ei tarvitse eksplisiittisesti määrittää vaan tyyppi määräytyy sen perusteella minkälainen arvo muuttujaan sijoitetaan. Muuttujan tyyppiä voi myös vaihtaa sijoittamalla siihen uuden eri tyyppisen arvon. 
+Python on dynaamisesti tyypitetty kieli eli muuttujien arvon tyyppiä ei tarvitse eksplisiittisesti määrittää vaan tyyppi määräytyy sen perusteella minkälainen arvo muuttujaan sijoitetaan. Muuttujan tyyppiä voi myös vaihtaa sijoittamalla siihen uuden eri tyyppisen arvon. Listaus \ref{lst:ex1} sisältää yksinkertaisen esimerkin Python-kielen syntaksista. Ohjelma antaa tulosteet ''Hello World!'' ja ''12''.
 %Modernit IDE:t kuten PyCharm\footnote{\url{https://www.jetbrains.com/pycharm/}} pystyvät koodin perusteella usein päättelemään muuttujan tyypin.
+
+\begin{listing}
+    \inputminted{python}{code/foo.py}
+    \label{lst:ex1}
+    \caption{Yksinkertainen esimerkki Python-kielen syntaksista.}
+\end{listing}
 
 Pythonissa kaikki arvot ovat olioita. Olion tyyppi määrittää mitä metodeja ja ominaisuuksia olio tarjoaa. Osa olioista on muuttumattomia (immutable) ja osa muutettavia (mutable).
 
@@ -185,8 +197,6 @@ Osittainsovellus (partial application).
 %Funktionaaliset piirteet.
 
 \section{Python-metaohjelmointi laajemmin}
-
-Psyco.
 
 Exec. Eval. Compile.
 
