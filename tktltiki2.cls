@@ -111,13 +111,13 @@
 
 %%%% listings.sty configuration
 
-\ifdiss@listings
-\RequirePackage{listings}
-\lstset{captionpos=b,floatplacement=t}
-\@removefromreset{lstlisting}{chapter}
-\renewcommand{\thelstlisting}{\@arabic\c@lstlisting}
-\ifdiss@fi\def\lstlistingname{Listaus}\fi
-\fi
+%\ifdiss@listings
+%\RequirePackage{listings}
+%\lstset{captionpos=b,floatplacement=t}
+%\@removefromreset{lstlisting}{chapter}
+%\renewcommand{\thelstlisting}{\@arabic\c@lstlisting}
+%\ifdiss@fi\def\lstlistingname{Listaus}\fi
+%\fi
 
 % -- Front matter and main matter --
 
