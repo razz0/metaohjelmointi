@@ -11,7 +11,7 @@
 \usepackage{lmodern}
 \usepackage{microtype}
 %\usepackage[table,xcdraw]{xcolor}    % loads also »colortbl«
-%\usepackage{listings}
+\usepackage{listings}
 \usepackage{minted}
 \usepackage{amsfonts,amsmath,amssymb,amsthm,booktabs,enumitem,graphicx}
 \usepackage{tocloft}
@@ -61,7 +61,7 @@
 
 \addto\captionsfinnish{
   \renewcommand{\lstlistingname}{Listaus}
-  \renewcommand{\lstlistlistingname}{Listaukset}
+%  \renewcommand{\lstlistlistingname}{Listaukset}
 }
 
 % --- Theorem environment definitions ---
@@ -128,7 +128,9 @@
 \section{Johdanto}
 %%%%%%%%%%%%%%%%%%%
 
-TODO: Johdanto. (Metaohjelmointi, Python)
+% TODO: Johdanto. (Mitä on metaohjelmointi, Python)
+
+Tutkielmassa esitellään Python-kielen perusteet ja tutustutaan metaohjelmointiin Python-kielellä. Metaohjelmoinnista tarkastellaan lähinnä suoritusaikaista metaohjelmointia
 
 %%%%%%%%%%%%%%%%%%%
 \section{Python yleisesti}
@@ -136,7 +138,7 @@ TODO: Johdanto. (Metaohjelmointi, Python)
 
 %\subsection{Historia}
 
-Ensimmäinen Python-kielen versio julkaistu 1991 [TODO: lähde]. Python-kielestä on nykyään käytössä eri versioita. Python 2.7 on edelleen melko suosittu vaikka versio 3 on julkaistu jo 2008. Versio 3 ei ole yhteensopiva aiempien versioiden kanssa. Version 2:n suosion taustalla on se, että monet suositut kirjastot ja sovelluskehykset eivät ole siirtyneet versioon 3. Tämän tekstin esimerkit toimivat sekä Python 2.7:llä että Python 3:lla, ellei toisin mainta.
+Ensimmäinen Python-kielen versio julkaistu 1991 [TODO: lähde]. Python-kielestä on nykyään käytössä eri versioita ja Python 2.7 on edelleen melko suosittu vaikka versio 3 on julkaistu jo 2008. Versio 3 ei ole yhteensopiva aiempien versioiden kanssa. Version 2:n suosion taustalla on se, että monet suositut kirjastot ja sovelluskehykset eivät ole siirtyneet versioon 3. Tämän tekstin esimerkit toimivat sekä Python 2.7:llä että Python 3:lla, ellei toisin mainta.
 
 Pythonin suosio on kasvanut tasaisesti ja se on nykyään käytetyin kieli ohjelmoinnin perusteiden opetukseen Yhdysvaltojen yliopistoissa \cite{python-teaching}.
 
@@ -155,7 +157,8 @@ Python ohjelma koostuu loogisista riveistä, jotka ovat yhden tai useamman ''fyy
 \subsection{Muuttujat}
 
 Python on dynaamisesti tyypitetty kieli eli muuttujien arvon tyyppiä ei tarvitse eksplisiittisesti määrittää vaan tyyppi määräytyy sen perusteella minkälainen arvo muuttujaan sijoitetaan. Muuttujan tyyppiä voi myös vaihtaa sijoittamalla siihen uuden eri tyyppisen arvon. Listaus \ref{lst:ex1} sisältää yksinkertaisen esimerkin Python-kielen syntaksista.
-%Modernit IDE:t kuten PyCharm\footnote{\url{https://www.jetbrains.com/pycharm/}} pystyvät koodin perusteella usein päättelemään muuttujan tyypin.
+
+Modernit IDE:t kuten PyCharm\footnote{\url{https://www.jetbrains.com/pycharm/}} pystyvät koodin perusteella usein päättelemään muuttujan tyypin.
 
 \begin{listing}
     \inputminted{python}{code/foo.py}
@@ -164,6 +167,12 @@ Python on dynaamisesti tyypitetty kieli eli muuttujien arvon tyyppiä ei tarvits
 \end{listing}
 
 Pythonissa kaikki arvot ovat olioita. Olion tyyppi määrittää mitä metodeja ja ominaisuuksia olio tarjoaa. Osa olioista on muuttumattomia (immutable) ja osa muutettavia (mutable).
+
+\subsection{Luokat ja oliot}
+
+%TODO: Luokat ja oliot
+
+Kahdella alaviivalla nimen alussa ja lopussa merkitään Python-kielen ''maagisia'' metodeita, attribuutteja ja olioita.
 
 %TODO: Esimerkkejä
 
@@ -188,6 +197,7 @@ Esimerkki listakehitelmän käytöstä sekä joistain Python-kielen funktioista 
 
 Introspektiolla tarkoitetaan tietojen hakemista muistissa olevista olioista, moduuleista ja funktioista \cite{dive-into-python}.
 
+
 TODO: esimerkki kaikista perusjutuista: type, dir(), \_\_doc\_\_
 
 reflektio (dir(), \_\_luokat\_\_). 
@@ -197,7 +207,6 @@ reflektio (dir(), \_\_luokat\_\_).
 \subsection{Metaluokat}
 
 \subsection{Generaattorit}
-
 
 Yield on metaohjelmointia.
 
@@ -214,10 +223,9 @@ Osittainsovellus (partial application).
 
 \section{Python-metaohjelmointi laajemmin}
 
+% TODO: Exec. Eval. Compile.
 
-Exec. Eval. Compile.
-
-Käännösaikainen metaohjelmointi. Löytyykö template-kieliä?
+Käännösaikaista metaohjelmointia ei ole suoraan tuettu Pythonissa, mutta tämä ominaisuus on lisätty ainakin kahteen Pythonista jatkokehitettyyn kehitettyyn kieleen, Mythoniin\cite{mython} ja Convergeen\cite{tratt05}. Mython kääntää ohjelmakoodia suoraan Python-tavukoodiksi, mutta Convergen tuottamaa koodia ajetaan kielen omalla virtuaalikoneella.
 
 
 \subsection{Reflektio}
@@ -229,7 +237,7 @@ In computer science, reflection is the ability of a computer program to examine 
 
 \subsection{Ohjelman ajonaikainen muokkaus}
 
-metodien korvaaminen toisilla osoittimia muuttamalla. Monkey patching.
+% TODO: metodien korvaaminen toisilla osoittimia muuttamalla. Monkey patching.
 
 %%%%%%%%%%%%%%%%%%%%%
 \section{Yhteenveto}
