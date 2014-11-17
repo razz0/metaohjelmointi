@@ -9,7 +9,7 @@ print(x(1, 5, 'kissa'))
 # (1, 5, 'kissa')
 
 print(dir(__builtin__))
-# ['ArithmeticError', 'AssertionError', 'AttributeError', 'BaseException', 'BufferError', ... ]
+# ['ArithmeticError', 'AssertionError', 'AttributeError', ... ]
 
 __builtin__.dir = x
 
