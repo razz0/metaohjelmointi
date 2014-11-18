@@ -138,7 +138,7 @@ Tässä seminaarityössä tarkastellaan Python-ohjelmointikielen tarjoamia työk
 \section{Python-ohjelmointikieli}
 %%%%%%%%%%%%%%%%%%%
 
-Ensimmäinen Python-kielen versio julkaistu 1991 [TODO: lähde]. Python-kielestä on nykyään käytössä eri versioita ja Python 2.7 on edelleen melko suosittu vaikka versio 3 on julkaistu jo 2008. Versio 3 ei ole yhteensopiva aiempien versioiden kanssa. Version 2:n suosion taustalla on se, että monet suositut kirjastot ja sovelluskehykset eivät ole siirtyneet versioon 3. Tämän tekstin esimerkit toimivat sekä Python 2.7:llä että Python 3:lla, ellei toisin mainta.
+Ensimmäinen Python-kielen versio on julkaistu 1991. Python-kielestä on nykyään käytössä eri versioita ja Python 2.7 on edelleen melko suosittu vaikka versio 3 on julkaistu jo 2008. Versio 3 ei ole yhteensopiva aiempien versioiden kanssa. Version 2:n suosion taustalla on se, että monet suositut kirjastot ja sovelluskehykset eivät ole siirtyneet versioon 3. Tämän tekstin esimerkit toimivat sekä Python 2.7:llä että Python 3:lla, ellei toisin mainta.
 
 Pythonin suosio on kasvanut tasaisesti ja se on nykyään käytetyin kieli ohjelmoinnin perusteiden opetukseen Yhdysvaltojen yliopistoissa \cite{python-teaching}.
 
@@ -247,14 +247,15 @@ Pythonin standardikirjaston inspect-moduuli tarjoaa työkaluja introspektioon oh
 
 % TODO: Exec. Eval. Compile.
 
-Pythonissa on sisäänrakennetut funktiot \verb|compile|, \verb|eval| ja \verb|exec|, joiden avulla voidaan kääntää ja ajaa Python-koodia ohjelman ajon aikana \cite{codeobjects,martelli2006python}. Esimerkki tällaisesta on listauksessa 
+Pythonissa on sisäänrakennetut funktiot \verb|compile|, \verb|eval| ja \verb|exec|, joiden avulla voidaan kääntää ja ajaa Python-koodia ohjelman ajon aikana \cite{codeobjects,martelli2006python}. Esimerkki tällaisesta on listauksessa \ref{lst:ex_compile}. Esimerkin rivillä 1 luodaan muuttuja, joka sisältää käännettävän koodin merkkijonona. Rivillä 2 käännetään koodi merkkijonosta tavukoodiksi käyttämällä funktiota \verb|compile|, jonka parametrit ovat käännettävä koodi, koodin sisältävän tiedoston nimi, jossa käytetään merkkijonoa \verb|'<string>'| tarkoittamaan, että koodia ei luettu tiedostosta ja käännöstila (mode), jossa \verb|'single'| kertoo, että käännetään yksi lause (statement).
 
 \begin{listing}
-    \inputminted{python}{code/dynamichello.py}
+    \inputminted[linenos]{python}{code/dynamichello.py}
     \label{lst:ex_compile}
-    \caption{Esimerkki Python-komennon kääntämisestä tavukoodiksi ohjelman ajon aikana ja sen käännetyn koodin ajamisesta \cite{codeobjects}.}
+    \caption{Esimerkki Python-komennon kääntämisestä tavukoodiksi ohjelman ajon aikana ja käännetyn koodin ajamisesta \cite{codeobjects}.}
 \end{listing}
 
+% TODO: dis https://docs.python.org/2/library/dis.html
 
 %%%%%%%%%%%%%%%%%%%
 \subsection{Käännösaikainen metaohjelmointi}
