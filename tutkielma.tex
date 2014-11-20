@@ -130,7 +130,7 @@ Metaohjelmoinnilla tarkoitetaan klassisen määritelmän mukaan sellaisen tietok
 
 Tärkeä osa metaohjelmointia on ohjelman ajonaikainen tilansa tarkastelu ja muuntelu eli reflektio. Reflektioon kuuluu käsite introspektio, jolla tarkoitetaan ajonaikaista muistissa olevien olioiden tarkastelua \cite{dive-into-python}.
 
-Tässä seminaarityössä tarkastellaan Python-ohjelmointikielen tarjoamia työkaluja metaohjelmointiin. Alussa käydään läpi Python-kielen perusteita ja tämän jälkeen tutustutaan metaohjelmointiin Python-kielellä. Metaohjelmoinnista tarkastellaan lähinnä suoritusaikaista metaohjelmointia.
+Tässä seminaarityössä tarkastellaan Python-ohjelmointikielen tarjoamia työkaluja metaohjelmointiin. Alussa käydään läpi Python-kielen perusteita ja tämän jälkeen tutustutaan metaohjelmointiin Python-kielellä. Metaohjelmoinnista tarkastellaan lähinnä suoritusaikaista metaohjelmointia. 
 
 
 
@@ -138,13 +138,15 @@ Tässä seminaarityössä tarkastellaan Python-ohjelmointikielen tarjoamia työk
 \section{Python-ohjelmointikieli}
 %%%%%%%%%%%%%%%%%%%
 
-Ensimmäinen Python-kielen versio on julkaistu 1991. Python-kielestä on nykyään käytössä eri versioita ja Python 2.7 on edelleen melko suosittu vaikka versio 3 on julkaistu jo 2008. Versio 3 ei ole yhteensopiva aiempien versioiden kanssa. Version 2:n suosion taustalla on se, että monet suositut kirjastot ja sovelluskehykset eivät ole siirtyneet versioon 3. Tämän tekstin esimerkit toimivat sekä Python 2.7:llä että Python 3:lla, ellei toisin mainta.
+Ensimmäinen Python-kielen versio on julkaistu 1991. Python-kielestä on nykyään käytössä eri versioita ja Python 2.7 on edelleen melko suosittu vaikka versio 3 on julkaistu jo 2008. Versio 3 ei ole yhteensopiva aiempien versioiden kanssa. Version 2:n suosion taustalla on se, että monet suositut kirjastot ja sovelluskehykset eivät ole siirtyneet versioon 3. Tämän seminaarityön esimerkit toimivat sekä Python 2.7:llä että Python 3:lla, ellei toisin mainta. Esimerkeissä olevat rivin alusta alkavat kommentit sisältävät ohjelman tulosteita, koodia koskevat kommentit on laitettu kommentoitavan rivin perään.
 
 Pythonin suosio on kasvanut tasaisesti ja se on nykyään käytetyin kieli ohjelmoinnin perusteiden opetukseen Yhdysvaltojen yliopistoissa \cite{python-teaching}.
 
-Python-ohjelmakoodia voidaan kääntää useilla eri kääntäjillä \cite{martelli2006python}. Käytetyin kääntäjä on CPython (Classic Python), joka kääntää alkuperäisen koodin Python-tavukoodiksi. Tavukoodia ajetaan C-kielellä toteutetulla virtuaalikoneella \cite{martelli2006python}. Standardikirjasto on toteutettu osittain C:llä ja osittain Pythonilla.
+Python-ohjelmakoodia voidaan kääntää useilla eri kääntäjillä \cite{martelli2006python}. Käytetyin kääntäjä on CPython (Classic Python), joka kääntää alkuperäisen koodin Python-tavukoodiksi. Muita suosittuja kääntäjiä ovat Java-tavukoodiksi kääntävä Jython sekä IronPython, joka kääntää Python-koodia .NET-ympäristön käyttämäksi CIL-tavukoodiksi. PyPy on Python-kielellä toteutettu useissa eri ympäristöissä toimiva suoraan konekielelle koodia kääntävä ajonaikainen (just-in-time) kääntäjä. PyPy on toteutettu RPython-kielellä, joka on Python-kielen osajoukko.
 
-Muita suosittuja kääntäjiä ovat Java-tavukoodiksi kääntävä Jython sekä IronPython, joka kääntää Python-koodia .NET-ympäristön käyttämäksi CIL-tavukoodiksi. PyPy on Python-kielellä toteutettu useissa eri ympäristöissä toimiva suoraan konekielelle koodia kääntävä ajonaikainen (just-in-time) kääntäjä. PyPy on toteutettu RPython-kielellä, joka on Python-kielen osajoukko.
+Pythonin standardikirjasto on toteutettu osittain C:llä ja osittain Pythonilla.
+
+CPythonilla käännettyä tavukoodia voidaan ajaa C-kielellä toteutetulla virtuaalikoneella \cite{martelli2006python}. Virtuaalikone tulkitsee ajettaessa tavukoodia lause kerrallaan.
 
 Tässä luvussa käydään läpi Python-kielen perusteita ja metaohjelmoinnin kannalta olennaisia asioita.
 
@@ -160,7 +162,7 @@ Pythonissa on 30 avainsanaa (keyword), jotka ovat kielen varattuja sanoja. Näit
 
 \subsection{Muuttujat}
 
-Python on dynaamisesti tyypitetty kieli eli muuttujien arvon tyyppiä ei tarvitse eksplisiittisesti määrittää vaan tyyppi määräytyy sen perusteella minkälainen arvo muuttujaan sijoitetaan. Muuttujan tyyppiä voi myös vaihtaa sijoittamalla siihen uuden eri tyyppisen arvon. Listaus \ref{lst:ex1} sisältää yksinkertaisen esimerkin Python-kielen syntaksista.
+Python on dynaamisesti tyypitetty kieli eli muuttujien arvon tyyppiä ei tarvitse eksplisiittisesti määrittää vaan tyyppi määräytyy sen perusteella minkälainen arvo muuttujaan sijoitetaan. Muuttujan tyyppiä voi myös vaihtaa sijoittamalla siihen uuden eri tyyppisen arvon. Listaus \ref{lst:ex1} sisältää yksinkertaisen esimerkin Python-kielen syntaksista. Rivillä 1 asetetaan muuttujan \verb|a| arvoksi merkkijono \verb|Hello world!|, joka tulostetaan rivillä 2. Rivillä 5 tulostetaan merkkijonon \verb|a| pituus.
 
 Modernit IDE:t kuten PyCharm\footnote{\url{https://www.jetbrains.com/pycharm/}} pystyvät koodin perusteella usein päättelemään muuttujan tyypin.
 
@@ -172,17 +174,15 @@ Modernit IDE:t kuten PyCharm\footnote{\url{https://www.jetbrains.com/pycharm/}} 
 
 Pythonissa kaikki arvot, muuttujat ja funktiot ovat olioita. Olion tyyppi määrittää mitä metodeja ja ominaisuuksia olio tarjoaa. Osa olioista on muuttumattomia (immutable) ja osa muutettavia (mutable). Python-kielessä ei ole erikseen vakioita, mutta käytäntönä on käyttää muuttujan nimessä pelkästään isoja kirjaimia, jos muuttujan arvoa ei ole tarkoitus muuttaa.
 
-% TODO: Erilaiset muuttujatyypit
-
+Pythonin sisäänrakennettuja tietotyyppejä on mm. numeeriset \verb|int| ja \verb|float|, sekvenssityypit \verb|list|, \verb|str| ja \verb|tuple|, joukko \verb|set|, ''sanakirja'' \verb|dict| sekä tiedosto \verb|file|. Näiden lisäksi standardikirjaston moduuleista löytyy lisää tietotyyppejä kuten \verb|datetime| ja \verb|array|.
 
 \subsection{Sekvenssit}
 
-Python-kielessä mm. sisäänrakennetut tietotyypit lista, merkkijono ja monikko (tuple) ovat sekvenssejä. Sekvenssit ovat iteroitavia (iterable) olioita eli ne kykenevät palauttamaan jäseniään yksi kerrallaan. Iteroitavia olioita ovat myös muut oliot, joissa on toteutettu jäseniä palauttava \verb|__iter__| -metodi. Iteroitavia olioita voidaan käyttää suoraan osana esimerkiksi \verb|for| -toistolauseissa. kuten esimerkiksi lauseessa \verb|for x in [1,2,3]: print(x)|.
+Sisäänrakennetuista tietotyypeistä mm. lista, merkkijono ja monikko (tuple) ovat sekvenssejä. Sekvenssit ovat iteroitavia (iterable) olioita eli ne kykenevät palauttamaan jäseniään yksi kerrallaan. Iteroitavia olioita ovat myös muut oliot, joissa on toteutettu jäseniä palauttava \verb|__iter__| -metodi. Iteroitavia olioita voidaan käyttää suoraan osana esimerkiksi \verb|for| -toistolauseissa. kuten esimerkiksi lauseessa \verb|for x in [1,2,3]: print(x)|.
 
-Listakehitelmä (list comprehension), joukkokehitelmä (set comprehension) ja sanakirjakehitelmä (dictionary comprehension) ovat helppoja tapoja luoda lista-, joukko- tai sanakirjaolioita jonkin syötteen perusteella. Esimerkki listakehitelmän sekä joidenkin Python-kielen funktioiden käytöstä on listauksessa \ref{lst:ex_listakehis}. Funktio \verb|range| palauttaa Python 2:ssa listan ja Python 3:ssa generaattoriolion, jota voidaan käyttää listan tapaan. Funktio \verb|all| tarkastaa kaikkien listan (tai muun iteroitavan olion) totuusarvon. Pythonissa kaikki oliot voidaan evaluoida totuusarvoina, jolloin lukujen tapauksessa aina luku ''0'' evaluoituu epätodeksi ja muut luvut todeksi.
+Listakehitelmä (list comprehension), joukkokehitelmä (set comprehension) ja sanakirjakehitelmä (dictionary comprehension) ovat helppoja tapoja luoda lista-, joukko- tai sanakirjaolioita jonkin syötteen perusteella. Esimerkkejä listakehitelmän käytöstä sekä joidenkin Python-kielen funktioiden käytöstä on listauksessa \ref{lst:ex_listakehis}. Funktio \verb|range| palauttaa Python 2:ssa listan ja Python 3:ssa generaattoriolion, jota voidaan käyttää listan tapaan. Funktio \verb|all| tarkastaa kaikkien listan (tai muun iteroitavan olion) totuusarvon. Pythonissa kaikki oliot voidaan evaluoida totuusarvoina, jolloin lukujen tapauksessa aina luku ''0'' evaluoituu epätodeksi ja muut luvut todeksi.
 
-% TODO: Selosta esimerkit kohta kohdalta...
-
+% TODO: Selosta esimerkki
 \begin{listing}
     \inputminted[linenos]{python}{code/luvut.py}
     \caption{Esimerkki funktion range käytöstä ja listakehitelmistä.}
@@ -196,7 +196,6 @@ Listakehitelmä (list comprehension), joukkokehitelmä (set comprehension) ja sa
 
 Python on olio-ohjelmointikieli, joka tukee moniperintää.
 
-Kahdella alaviivalla nimen alussa ja lopussa merkitään Python-kielen ''maagisia'' metodeita, attribuutteja ja olioita.
 
 % TODO: Vanhat luokat, uudet luokat
 
@@ -217,10 +216,11 @@ Funktio \verb|type| palauttaa olion tietotyypin \cite{dive-into-python}. Tämä 
 
 Funktio \verb|dir| palauttaa listan olion attribuuteista, joihin kuuluu myös olion metodit. Funktio \verb|getattr| ottaa parametrina merkkijonon ja palauttaa parametrin nimisen attribuutin. Tällöin voidaan esimerkiksi kutsua metodeja oliosta, jonka rakennetta ei tunnetta vielä käännösvaiheessa \cite{dive-into-python}. Funktiolla \verb|isinstance| voidaan tarkistaa onko joku olio tietyn tyyppinen. 
 
-Olioiden lyhyet kuvaukset (docstring) saa ajon aikana haettua niiden \verb|__doc__| -attribuutista. 
+Olioiden lyhyet kuvaukset (docstring) saa ajon aikana haettua niiden \verb|__doc__| -attribuutista. Kahdella alaviivalla nimen alussa ja lopussa merkitään Python-kielen ''maagisia'' metodeita, attribuutteja ja olioita. 
 
 Olioita, luokkia ja funktioita voidaan muokata ajon aikana melko vapaasti. Esimerkki peruskirjaston \verb|dir| funktion ylikirjoittamisesta omalla funktiolla on listauksessa \ref{lst:ex_intro2}. Esimerkin oma funktio palauttaa sille annetut argumentit tekemättä niille mitään. Tämänkaltaisesta kirjastojen ja moduuleiden osien ajonaikaisesta muokkaamisesta käytetään myös tsesta käytetään myös termiä ''monkey patching''.
 
+% TODO: käytä .getattr('print')
 \begin{listing}
     \inputminted[linenos]{python}{code/introspektio2.py}
     \caption{Standardikirjaston funktion ylikirjoittaminen omalla funktiolla.}
@@ -228,6 +228,7 @@ Olioita, luokkia ja funktioita voidaan muokata ajon aikana melko vapaasti. Esime
 \end{listing}
 
 
+% TODO: https://web.archive.org/web/20120926041111/http://www.ibm.com/developerworks/library/l-pyint/index.html
 \subsection{inspect-moduuli}
 
 Pythonin standardikirjaston inspect-moduuli tarjoaa työkaluja olioiden tilan tutkimiseen ohjelman ajon aikana. 
@@ -259,7 +260,9 @@ Pythonilla on mahdollista luoda uusia luokkia dynaamisesti ohjelman ajon aikana 
 
 % TODO: Exec. Eval. Compile.
 
-Pythonissa on sisäänrakennetut funktiot \verb|compile|, \verb|eval| ja \verb|exec|, joiden avulla voidaan kääntää ja ajaa Python-koodia ohjelman ajon aikana \cite{codeobjects,martelli2006python}. Esimerkki tällaisesta on listauksessa \ref{lst:ex_compile}. Esimerkin rivillä 1 luodaan muuttuja, joka sisältää käännettävän koodin merkkijonona. Rivillä 2 käännetään koodi merkkijonosta tavukoodiksi käyttämällä funktiota \verb|compile|, jonka parametrit ovat käännettävä koodi, koodin sisältävän tiedoston nimi, jossa käytetään merkkijonoa \verb|'<string>'| tarkoittamaan, että koodia ei luettu tiedostosta ja käännöstila (mode), jossa \verb|'single'| kertoo, että käännetään yksi lause (statement). Rivi 4 tulostaa \verb|code_obj| -muuttujan merkkijonoesityksen. Rivillä 7 ajetaan tavukoodi muuttujasta \verb|code_obj|.
+Pythonissa on sisäänrakennetut funktiot \verb|compile|, \verb|eval| ja \verb|exec|, joiden avulla voidaan kääntää ja ajaa Python-koodia ohjelman ajon aikana \cite{codeobjects,martelli2006python}.
+
+Esimerkki ajonaikaisesta koodin kääntämisestä on listauksessa \ref{lst:ex_compile}. Esimerkin rivillä 1 luodaan muuttuja, joka sisältää käännettävän koodin merkkijonona. Rivillä 2 käännetään koodi merkkijonosta tavukoodiksi käyttämällä funktiota \verb|compile|, jonka parametrit ovat käännettävä koodi, koodin sisältävän tiedoston nimi, jossa käytetään merkkijonoa \verb|'<string>'| tarkoittamaan, että koodia ei luettu tiedostosta ja käännöstila (mode), jossa \verb|'single'| kertoo, että käännetään yksi lause (statement). Rivi 4 tulostaa \verb|code_obj| -muuttujan merkkijonoesityksen. Rivillä 7 ajetaan tavukoodi muuttujasta \verb|code_obj|.
 
 \begin{listing}
     \inputminted[linenos]{python}{code/dynamichello.py}
@@ -268,14 +271,23 @@ Pythonissa on sisäänrakennetut funktiot \verb|compile|, \verb|eval| ja \verb|e
 \end{listing}
 
 
-\subsection{dis-moduuli}
+\subsection{Tavukoodin tarkastelu ja muokkaus}
 
-% TODO: https://docs.python.org/2/library/dis.html
+Standardikirjaston \verb|dis|-moduulilla voidaan tutkia Python-tavukoodia. Listauksessa \ref{lst:tavukoodi} eräs esimerkkifunktio sekä sen tavukoodin muodostaminen \verb|dis|-moduulin \verb|dis|-metodilla sekä tulostettu tavukoodi. Tavukoodi on tulostettu Python 2:lla ja se on erinäköinen Python 3:lla.
 
+\begin{listing}
+    \inputminted[linenos]{python}{code/tavukoodi.py}
+    \caption{Python-tavukoodin tarkastelu dis-moduulilla.}
+    \label{lst:tavukoodi}
+\end{listing}
+
+Moduuli \verb|parser| antaa rajapinnan Python-kääntäjän sisäiseen jäsennyspuuhun ja mahdollistaa sen muokkaamisen. Tämän moduulin lisäämisen jälkeen on kuitenkin standardikirjastoon lisätty \verb|ast|-moduuli, joka mahdollistaa kääntäjän abstraktin syntaksipuun (abstract syntax tree) luomisen annetun ohjelmakoodin perusteella ja sen muokkaamisen. Funktiolle \verb|compile| voidaan antaa parametrina muokatun AST-puun sisältävä \verb|AST|-olio ja kääntää se tavukoodiksi.
 
 \subsection{Käännösaikainen metaohjelmointi}
 
-Käännösaikaista metaohjelmointia ei ole suoraan tuettu Pythonissa, mutta tämä ominaisuus on lisätty ainakin kahteen Pythonista jatkokehitettyyn kehitettyyn kieleen, Mythoniin\cite{mython} ja Convergeen\cite{tratt05}. Mython kääntää ohjelmakoodia suoraan Python-tavukoodiksi, mutta Convergen tuottamaa koodia ajetaan kielen omalla virtuaalikoneella.
+Käännösaikaista metaohjelmointia ei ole suoraan tuettu Pythonin standardikirjastossa. Template-metaohjelmointi on mahdollista esimerkiksi Jinja2 -template-moottorilla (template engine) \cite{jinja}.
+
+Käännösaikainen metaohjelmointi on myös lisätty suoraan osaksi kahta Pythonista jatkokehitettyä kieltä, Mythoniin\cite{mython} ja Convergeen\cite{tratt05}. Mython kääntää ohjelmakoodia suoraan Python-tavukoodiksi, mutta Convergen tuottamaa koodia ajetaan kielen omalla virtuaalikoneella.
 
 
 %%%%%%%%%%%%%%%%%%%%%
