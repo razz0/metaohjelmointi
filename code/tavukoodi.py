@@ -3,7 +3,7 @@
 import dis
 
 def neliot(iteroitava):
-  '''Palauta lista parametrin alkioiden neliöistä'''
+  '''Palauttaa listan parametrin alkioiden neliöistä'''
   return [x**2 for x in iteroitava]
   
 dis.dis(neliot)
