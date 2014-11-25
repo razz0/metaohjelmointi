@@ -5,9 +5,6 @@ import __builtin__
 def x(*args): 
   return args
 
-print(x(1, 5, 'kissa'))
-# (1, 5, 'kissa')
-
 print(dir(__builtin__))
 # ['ArithmeticError', 'AssertionError', 'AttributeError', ... ]
 
