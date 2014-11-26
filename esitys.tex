@@ -216,9 +216,6 @@ print(inspect.isfunction(olio.c))
 print(inspect.ismethod(olio.c))
 # True
 
-print(inspect.isroutine(olio.c))
-# True
-
 print(inspect.getmro(MyClassC))
 # (<class '__main__.MyClassC'>, 
 #  <class '__main__.MyClassA'>, 
@@ -228,29 +225,157 @@ print(inspect.getmro(MyClassC))
 \end{minted}
 \end{frame}
 
-\section{Ohjelman ajonaikainen muokkaus}
 
 \begin{frame}[fragile]
-\frametitle{Ohjelman ajonaikainen muokkaus}
+\frametitle{Tavukoodin tarkastelu}
+\begin{minted}{python}
+import dis
+dis.dis(olio.c)
+# 4           0 LOAD_FAST                0 (self)
+#             3 LOAD_ATTR                0 (a)
+#             6 CALL_FUNCTION            0
+#             9 POP_TOP             
+#
+# 5          10 LOAD_FAST                0 (self)
+#            13 LOAD_ATTR                1 (b)
+#            16 CALL_FUNCTION            0
+#            19 POP_TOP             
+#            20 LOAD_CONST               0 (None)
+#            23 RETURN_VALUE        
+\end{minted}
 \end{frame}
 
+
+\section{Ohjelman muokkaus ajon aikana}
+
+
 \begin{frame}[fragile]
-\frametitle{Monkey patching}
-Esimerkiksi jonkin kirjaston toiminnallisuuden muuttaminen ajon aikana. 
+\frametitle{Ohjelman muokkaus ajon aikana}
+\begin{itemize}
+\item{Olioiden muokkaus sijoittamalla uusia arvoja aiempien tilalle}
+\item{Luokan muokkaaminen vaikuttaa siitä luotuihin olioihin}
+\item{Olemassa olevia muuttujia voidaan poistaa \verb|del|-funktiolla}
+\item{Myös ulkopuolisia kirjastoja voidaan muokata vapaasti ajon aikana}
+\item{Uusien luokkien luominen dynaamisesti}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Dynaamiset luokat}
+\begin{minted}[fontsize=\footnotesize]{python}
+def dynamic_c(self):
+  self.a()
+  self.b()
+
+DynClassC = type(
+  'DynClassC', 
+  (MyClassA, MyClassB), 
+  {'__doc__': 
+   "Dynaaminen moniperinta", 
+   'c': dynamic_c
+  })
+
+olio2 = DynClassC()
+olio2.c()
+# foo    
+# bar
+\end{minted}
+\end{frame}
+
+%\begin{frame}[fragile]
+%\frametitle{Monkey patching}
+%Esimerkiksi jonkin kirjaston toiminnallisuuden muuttaminen ajon aikana. 
 % Voi olla hyödyllistä.
 % TODO: Esimerkki
-\end{frame}
+%\end{frame}
 
-\section{Koodin kääntäminen ajon aikana}
 
 \begin{frame}[fragile]
-\frametitle{Koodin kääntäminen ajonaikana}
+\frametitle{Koodin kääntäminen ajon aikana}
+\begin{minted}[fontsize=\footnotesize]{python}
+code_str = 'print("Hello world!")'
+code_obj = compile(code_str, '<string>', 'single')
+
+print(code_obj)
+# <code object <module> at 0x7f06341f2cb0, file "<string>", line 1>
+
+exec(code_obj)
+# Hello world!
+\end{minted}
 \end{frame}
 
-\section{AST-puun muokkaus}
+
+\section{AST-puut}
+
+
+\begin{frame}[fragile]
+\frametitle{AST-puun käsittely}
+\begin{minted}[fontsize=\footnotesize]{python}
+import ast
+
+tree = ast.parse("print('hello world')")
+exec(compile(tree, filename="<ast>", mode="exec"))
+# hello world
+
+print(ast.dump(tree))
+# Module( body = [Print(
+#     dest = None, 
+#     values = [Str(s = 'hello world')], 
+#     nl = True)])
+
+for node in ast.walk(tree):
+  print(type(node))
+# <class '_ast.Module'>
+# <class '_ast.Print'>
+# <class '_ast.Str'>
+
+\end{minted}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{AST-puun käsittely}
+\begin{minted}[fontsize=\footnotesize]{python}
+tree = ast.parse(
+"""
+a, b, c = ('foo', 'bar', 'baz')
+print(" - ".join([a, b, c]))
+""")
+
+class StrLister(ast.NodeVisitor):
+    def visit_Str(self, node):
+        print(node.s)
+        self.generic_visit(node)
+
+StrLister().visit(tree)
+# foo
+# bar
+# baz
+#  - 
+\end{minted}
+\end{frame}
+
 
 \begin{frame}[fragile]
 \frametitle{AST-puun muokkaus}
+\begin{itemize}
+\item{Onnistuu samaan tapaan kuin \verb|NodeVisitor|-esimerkissä}
+\item{Perittävänä luokkana \verb|NodeVisitor|:in sijaan \verb|NodeTransformer|}
+\item{Samankaltaiset ''visit''-metodit toimivat, paluuarvona annetaan solmu (node)}
+\item{\verb|ast|-moduulista löytyy apumetodeja solmujen muodostamiseen}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Yhteenveto}
+\begin{itemize}
+\item{Reflektio helppoa}
+\item{Laajasta standardikirjastosta apua}
+\item{Koodia voi kääntää ja ottaa käyttöön ajon aikana}
+\item{AST-puun muokkaus}
+\end{itemize}
 \end{frame}
 
 

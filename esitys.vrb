@@ -1,1 +1,7 @@
-\frametitle {AST-puun muokkaus}
+\frametitle {Yhteenveto}
+\begin{itemize}
+\item{Reflektio helppoa}
+\item{Laajasta standardikirjastosta apua}
+\item{Koodia voi kääntää ja ottaa käyttöön ajon aikana}
+\item{AST-puun muokkaus}
+\end{itemize}
