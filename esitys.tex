@@ -13,6 +13,13 @@
 \date{\today}
 %\beamertemplatenavigationsymbolsempty
 
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
 \begin{document}
 
 {
@@ -30,24 +37,76 @@
   \tableofcontents%[currentsection]
 \end{frame}
 
-\section{Python}
+\section{Johdanto}
+
+\begin{frame}[fragile]
+\frametitle{Metaohjelmointi}
+\begin{itemize}
+%\item{Vaikeasti määriteltävä käsite}
+\item{Sellaisen ohjelman tekeminen, joka kirjoittaa uusia ohjelmia}
+\item{Ohjelma, joka manipuloi toisia ohjelmia ajon aikana}
+\item{Reflektio}
+\end{itemize}
+\end{frame}
 
 \begin{frame}[fragile]
 \frametitle{Python}
-\begin{minted}{python}
-print 'foobar!' # Shazbot
-\end{minted}
+\begin{itemize}
+\item{Dynaaminen olio-ohjelmointikieli}
+\item{Dynaamisesti tyypitetty}
+\item{Ensimmäinen versio 1991}
+\item{Nykyään käytössä versiot 2 ja 3}
+\item{Kääntäjiä CPython, Jython, IronPython, PyPy}
+\end{itemize}
 \end{frame}
 
 \section{Pythonin perusteita}
 
 \begin{frame}[fragile]
-\frametitle{Python}
-\begin{itemize}
-\item{Foo}
-\item{Bar}
-\end{itemize}
+\frametitle{Syntaksi}
+\begin{minted}{python}
+lista = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+joukko = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+monikko = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+print(lista == joukko)
+# False
+
+print(set(lista) == joukko)
+# True
+
+print(lista == list(joukko) == list(monikko))
+# True
+\end{minted}
 \end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Syntaksi}
+\begin{minted}[fontsize=\footnotesize]{python}
+parents, babies = (1, 1)
+while babies < 100:
+    print 'This generation has {0} babies'.format(babies)
+    parents, babies = (babies, parents + babies)
+
+# This generation has 1 babies
+# This generation has 2 babies
+# This generation has 3 babies
+# This generation has 5 babies
+# This generation has 8 babies
+# This generation has 13 babies
+# This generation has 21 babies
+# This generation has 34 babies
+# This generation has 55 babies
+# This generation has 89 babies
+\end{minted}
+\blfootnote{https://wiki.python.org/moin/SimplePrograms}
+\end{frame}
+
+
+%\begin{frame}[fragile]
+%\frametitle{Duck typing}
+%\end{frame}
 
 
 \begin{frame}[fragile]
@@ -56,6 +115,7 @@ print 'foobar!' # Shazbot
 class MyClassA(object):
   def a(self):
     print('foo')
+
 class MyClassB(object):
   def b(self):
     print('bar')
@@ -68,8 +128,7 @@ class MyClassC(MyClassA, MyClassB):
 
 olio = MyClassC()
 olio.c()
-# foo
-# bar
+# foo    # bar
 \end{minted}
 \end{frame}
 
@@ -111,13 +170,10 @@ print(inspect.getdoc(inspect.getdoc))
 # uniformly removed from the second line onwards is removed.
 
 print(inspect.getdoc(inspect))
-# Get useful information from live Python objects.
-# 
-# This module encapsulates the interface provided by the internal special
-# attributes (co_*, im_*, tb_*, etc.) in a friendlier fashion.
-# It also provides some help for examining source code and class layout.
-#
-# ...
+# Get useful information from live Python objects.   ...
+
+print(inspect.ismodule(inspect))
+# True
 
 \end{minted}
 \end{frame}
@@ -126,8 +182,9 @@ print(inspect.getdoc(inspect))
 \frametitle{inspect-moduuli}
 \begin{minted}[fontsize=\footnotesize]{python}
 for attr in dir(olio):
-      docstring_header = str(inspect.getdoc(getattr(olio, attr))).splitlines()[0]
-      print("olio.%s: %s" % (attr, docstring_header))
+  docstr = str(inspect.getdoc(getattr(olio, attr)))
+  docstr_head = docstr.splitlines()[0]
+  print("olio.%s: %s" % (attr, docstr_head))
 
 # olio.__class__: Moniperija
 # olio.__delattr__: x.__delattr__('name') <==> del x.name
@@ -141,6 +198,32 @@ for attr in dir(olio):
 # olio.a: None
 # olio.b: None
 # olio.c: None
+
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{inspect-moduuli}
+\begin{minted}[fontsize=\footnotesize]{python}
+print(inspect.getsource(olio.c))
+#      def c(self):
+#            self.a()
+#            self.b()
+
+print(inspect.isfunction(olio.c))
+# False
+
+print(inspect.ismethod(olio.c))
+# True
+
+print(inspect.isroutine(olio.c))
+# True
+
+print(inspect.getmro(MyClassC))
+# (<class '__main__.MyClassC'>, 
+#  <class '__main__.MyClassA'>, 
+#  <class '__main__.MyClassB'>, 
+#  <type 'object'>)
 
 \end{minted}
 \end{frame}
