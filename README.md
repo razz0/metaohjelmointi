@@ -1,5 +1,3 @@
-Metaohjelmointi Pythonilla, seminaaritutkielma (Metaprogramming in Python, )
+Metaohjelmointi Python-kielellä (Metaprogramming in Python)
 
-Metaohjelmointi-seminaari syksy 2014 (Metaprogramming seminar in autumn 2014)
-
-Metaohjelmointi Pythonilla ()
+Metaohjelmointi-seminaari syksy 2014 (Metaprogramming seminar, autumn 2014)

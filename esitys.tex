@@ -216,7 +216,7 @@ print(inspect.isfunction(olio.c))
 print(inspect.ismethod(olio.c))
 # True
 
-print(inspect.getmro(MyClassC))
+print(inspect.getmro(type(olio)))
 # (<class '__main__.MyClassC'>, 
 #  <class '__main__.MyClassA'>, 
 #  <class '__main__.MyClassB'>, 
@@ -297,8 +297,15 @@ olio2.c()
 code_str = 'print("Hello world!")'
 code_obj = compile(code_str, '<string>', 'single')
 
-print(code_obj)
-# <code object <module> at 0x7f06341f2cb0, file "<string>", line 1>
+print(list(code_obj.co_code))
+# ['d', '\x00', '\x00', 'G', 'H', 'd', '\x01', '\x00', 'S']
+
+print(dis.dis(code_obj))
+#  1           0 LOAD_CONST               0 ('Hello world!')
+#              3 PRINT_ITEM          
+#              4 PRINT_NEWLINE       
+#              5 LOAD_CONST               1 (None)
+#              8 RETURN_VALUE        
 
 exec(code_obj)
 # Hello world!
