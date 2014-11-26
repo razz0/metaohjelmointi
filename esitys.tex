@@ -9,12 +9,19 @@
 
 \title{Metaohjelmointi Python-kielellä}
 \author{Mikko Koho}
-\institute{Institute of Computer Science\\Helsingin Yliopisto}
+\institute{Helsingin Yliopisto}
 \date{\today}
 %\beamertemplatenavigationsymbolsempty
 
 \begin{document}
-\frame{\titlepage}
+
+{
+\setbeamertemplate{headline}{}
+\begin{frame}
+%  \titlepage
+\maketitle
+\end{frame}
+}
 
 %\section{Sisältö}
 
@@ -23,9 +30,17 @@
   \tableofcontents%[currentsection]
 \end{frame}
 
-\section{Python-kieli}
+\section{Python}
+
+\begin{frame}[fragile]
+\frametitle{Python}
+\begin{minted}{python}
+print 'foobar!' # Shazbot
+\end{minted}
+\end{frame}
 
 \section{Pythonin perusteita}
+
 \begin{frame}[fragile]
 \frametitle{Python}
 \begin{itemize}
@@ -36,18 +51,98 @@
 
 
 \begin{frame}[fragile]
-\frametitle{Python}
-\begin{minted}{python}
-print 'foobar!' # Shazbot
-\end{minted}
+\frametitle{Luokat}
+\begin{minted}[fontsize=\footnotesize]{python}
+class MyClassA(object):
+  def a(self):
+    print('foo')
+class MyClassB(object):
+  def b(self):
+    print('bar')
 
-Baz
+class MyClassC(MyClassA, MyClassB):
+  """Moniperija"""
+  def c(self):
+    self.a()
+    self.b()
+
+olio = MyClassC()
+olio.c()
+# foo
+# bar
+\end{minted}
 \end{frame}
 
 \section{Reflektio}
 
 \begin{frame}[fragile]
-\frametitle{Reflektio}
+\frametitle{Introspektio}
+\begin{minted}{python}
+for attr in dir(olio): 
+  print(attr)
+
+# __class__
+# __delattr__
+# __dict__
+# __doc__
+# __format__
+# __getattribute__
+# __hash__
+# ...
+# a
+# b
+# c
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{inspect-moduuli}
+% \ldots
+\begin{minted}[fontsize=\footnotesize]{python}
+import inspect
+
+print(len(dir(inspect)))  # 87
+
+print(inspect.getdoc(inspect.getdoc))
+# Get the documentation string for an object.
+# 
+# All tabs are expanded to spaces.  To clean up docstrings that are
+# indented to line up with blocks of code, any whitespace than can be
+# uniformly removed from the second line onwards is removed.
+
+print(inspect.getdoc(inspect))
+# Get useful information from live Python objects.
+# 
+# This module encapsulates the interface provided by the internal special
+# attributes (co_*, im_*, tb_*, etc.) in a friendlier fashion.
+# It also provides some help for examining source code and class layout.
+#
+# ...
+
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{inspect-moduuli}
+\begin{minted}[fontsize=\footnotesize]{python}
+for attr in dir(olio):
+      docstring_header = str(inspect.getdoc(getattr(olio, attr))).splitlines()[0]
+      print("olio.%s: %s" % (attr, docstring_header))
+
+# olio.__class__: Moniperija
+# olio.__delattr__: x.__delattr__('name') <==> del x.name
+# olio.__dict__: dict() -> new empty dictionary
+# olio.__doc__: str(object) -> string
+# olio.__format__: default object formatter
+# olio.__getattribute__: x.__getattribute__('name') <==> x.name
+# olio.__hash__: x.__hash__() <==> hash(x)
+# olio.__init__: x.__init__(...) initializes x; see help(type(x)) for signature
+# ...
+# olio.a: None
+# olio.b: None
+# olio.c: None
+
+\end{minted}
 \end{frame}
 
 \section{Ohjelman ajonaikainen muokkaus}
