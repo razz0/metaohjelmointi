@@ -12,6 +12,7 @@
 *.pyg
 *.gz
 *.nav
+*.snm
 
 .metadata
 .idea/*
