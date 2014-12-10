@@ -13,6 +13,7 @@
 *.gz
 *.nav
 *.snm
+*.vrb
 
 .metadata
 .idea/*
