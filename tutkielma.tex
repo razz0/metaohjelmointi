@@ -227,6 +227,8 @@ Pythonissa myös luokat ovat olioita. Luokilla on joitain piirteitä kuten muodo
 
 Kahdella alaviivalla metodin nimen alussa ja lopussa merkitään luokan ''maagisia'' metodeita (magic methods) ja attribuutteja \cite[s. 104]{martelli2006python}. Näillä erikoisilla metodeilla on jokin erityinen käyttötarkoitus Pythonissa. Niiden toimintaa ja käyttöä on selitetty Pythonin dokumentaatiossa \cite{magic-methods}. Osa ''maagisista'' metodeista on sellaisia, että Python generoi ne olion luomisen yhteydessä, jolloin ne sisältävät jotain metatietoa itse oliosta. Monet metodeista ovat sellaisia, että niitä määrittelemällä tai muokkaamalla jo määriteltyjä voidaan vaikuttaa olion toimintaan ohjelmassa \cite{magic-methods, dive-into-python3}. Esimerkiksi muokkaamalla luokan \verb|__cmp__(self, other)|-metodia, voidaan ylikirjoittaa kahden luokasta muodostetun olion suuruusvertailu omalla metodilla. Samoin aritmeettisille operaattoreille on kullekin omat metodit. 
 
+Moniperinnästä on esimerkki listauksessa \ref{lst:ex_moniperinta}. Esimerkissä määritellään ensin luokka \verb|MyClassA|, joka sisältää metodin \verb|a|. Sen jälkeen riviltä 5 alkaen määritellään luokka \verb|MyClassB|, joka sisältää metodin \verb|b|. Rivillä 9 määritellään luokka \verb|MyClassC|, joka perii molemmat aiemmin määritellyt luokat ja sisältää metodin \verb|c|. Metodi \verb|c| kutsuu yläluokkien metodeita \verb|a| ja \verb|b|. Rivillä 16 kutsutaan luokasta \verb|MyClassC| luodun olion metodia \verb|c|, joka tulostaa rivit ''foo'' ja ''bar''.
+
 \begin{listing}
 \begin{minted}[linenos,frame=single,framesep=10pt]{python}
 class MyClassA(object):
@@ -245,14 +247,13 @@ class MyClassC(MyClassA, MyClassB):
 
 olio = MyClassC()
 olio.c()
-# foo    # bar
+# foo    
+# bar
 \end{minted}
     \caption{Esimerkki luokkien moniperinnästä.}
     \label{lst:ex_moniperinta}
 \end{listing}
 
-
-% TODO: Selitä auki metaluokat
 
 %%%%%%%%%%%%%%%%%%%
 \section{Metaohjelmointi Pythonilla}
@@ -286,7 +287,7 @@ Olioita, luokkia ja funktioita voidaan muokata suoritusaikana melko vapaasti. Es
 
 Pythonin standardikirjaston inspect-moduuli tarjoaa työkaluja olioiden tilan tutkimiseen ohjelman suoritusaikana. Moduuli sys tarjoaa työkaluja käytetyn Python-tulkin ja käyttöjärjestelmän tarkasteluun.
 
-Listauksessa \ref{lst:ex_inspect_olio} tarkastellaan inspect-moduulilla aiemmin listauksessa \ref{lst:ex_moniperinta} luotua oliota nimeltä \verb|olio|.
+Listauksessa \ref{lst:ex_inspect_olio} tarkastellaan inspect-moduulilla aiemmin listauksessa \ref{lst:ex_moniperinta} luotua oliota nimeltä \verb|olio|. Rivillä 1 tulostetaan olion \verb|olio| \verb|c|-metodin lähdekoodi. Rivellä 6 ja 9 selvitetään onko parametrinä annettu olio funktio tai metodi. Rivillä 12 käytetty \verb|inspect.getmro| palauttaa luokan kaikki yläluokat perintäjärjestyksessä.
 
 \begin{listing}
 \begin{minted}[linenos,frame=single,framesep=10pt]{python}
@@ -355,7 +356,7 @@ Moduuli \verb|parser| antaa rajapinnan Python-kääntäjän sisäiseen jäsennys
 
 \subsection{Käännösaikainen metaohjelmointi}
 
-Käännösaikaista metaohjelmointia ei ole suoraan tuettu Pythonissa. Mallien (template) käyttö Python-koodin luomiseen on mahdollista ajamalla mallia käsittelevä ohjelma ja tämän jälkeen kääntää mallin pohjalta luotu koodi. Tähän voidaan käyttää standardikirjastosta löytyvää yksinkertaista, mutta laajennettavaa \verb|string|-moduulin \verb|Template|-luokkaa tai jotakin Pythonin lukuisista mallimoottoreista (template engine) \cite{Templating}.
+Käännösaikaista metaohjelmointia ei ole suoraan tuettu Pythonissa. Mallien (template) käyttö Python-koodin luomiseen on mahdollista ajamalla mallia käsittelevä ohjelma ja tämän jälkeen kääntää mallin pohjalta luotu koodi. Tähän voidaan käyttää standardikirjastosta löytyvää yksinkertaista, mutta laajennettavaa string-moduulin \verb|Template|-luokkaa tai jotakin Pythonin lukuisista mallimoottoreista (template engine) \cite{Templating}.
 
 Käännösaikainen metaohjelmointi on myös lisätty kahteen Pythonista jatkokehitettyyn kieleen, Mythoniin \cite{mython} ja Convergeen \cite{tratt05}. Mython-kieltä voidaan kääntää Python-tavukoodiksi, mutta Converge-kielestä käännettyä koodia suoritetaan kielen omalla virtuaalikoneella.
 
