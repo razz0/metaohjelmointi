@@ -91,13 +91,20 @@
 \title{Metaohjelmointi Python-kielellä}
 \author{Mikko Koho}
 \date{\today}
-\level{Seminaarityö}
+\level{Seminaaritutkielma}
 
-\abstract{Tiivistelmä.
+\abstract{Tämä seminaaritutkielma käsittelee Python-ohjelmointikielen tarjoamia mahdollisuuksia metaohjelmointiin. Metaohjelmointi tarkoittaa sellaisten ohjelmien tekemistä, jotka tekevät uusia ohjelmia. Metaohjelmointiin kuuluu myös ohjelman suoritusaikainen itsensä tarkastelu ja muokkaus.
+
+Python on dynaaminen ohjelmointikieli ja tarjoaa hyvät mahdollisuudet tarkastella ja muokata ohjelmaa suoritusaikana. Luokkia ja olioita voidaan muokata vapaasti, uusia luokkia voidaan luoda suoritusaikana. Uutta ohjelmakoodia voidaan kääntää ja ajaa osana ohjelman suoritusta.
+
+Pythonin standardikirjastossa on monia metaohjelmointia tukevia moduuleita kuten ast, dis, inspect ja parser.
 }
 
-\keywords{Python, metaohjelmointi}
+\keywords{Python, ohjelmointi, metaohjelmointi}
 \classification{
+\textbf{Software and its engineering $\rightarrow$ Language features} \\
+\textit{Software and its engineering $\rightarrow$ Multiparadigm languages} \\
+Software and its engineering $\rightarrow$ Compilers \\
 }
 % classification according to ACM Computing Classification System (http://www.acm.org/about/class/)
                   % This is probably mostly relevant for computer scientists
@@ -109,31 +116,6 @@
 %
 
 
-
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% TODO: Vertaisarviointien yleisiä huomioita:
-
-% Lukuun 3 lisää esimerkkejä (oli 3) [x3].
-% Lukuun 3 lisää tekstiä metaohjelmoinnin eri työkaluista, nyt lähinnä listattu. [x2]
-% Hyvä kertoa minkälaisissa tapauksissa jostain metapiirteestä voi olla hyötyä [x2]
-% Dynaamisten luokkien esimerkki laajemmaksi
-% Esimerkki AST:n tarkastelusta ja muokkauksesta [x3]
-% Esimerkit lähemmäs tekstissä olevaa viitettä [x2]
-% Esimerkki luokan muokkaamisesta ajoaikana ja selvennystä miten muokkaus vaikuttaa olioihin
-% Selosta esimerkit tekstissä rivi riviltä
-
-%%%%%%% TODO Muuta:
-
-% Metaohjelmointi-in-action: http://blog.ducksboard.com/runtime-code-modification-erlang-python/
-% Asioita ja esimerkkejä esityksestä tekstiin
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
     
@@ -156,11 +138,11 @@
 \section{Johdanto}
 %%%%%%%%%%%%%%%%%%%
 
-Metaohjelmoinnilla tarkoitetaan klassisen määritelmän mukaan sellaisen tietokoneohjelman tekemistä, joka kirjoittaa uusia tietokoneohjelmia \cite[s. 6]{hazzard2013}. Tämä on kuitenkin melko yksinkertaistettu määritelmä, eikä metaohjelmointia ole helppo määritellä tarkasti. Toinen yleinen määritelmä esittää metaohjelmoinnin olevan ''tietokoneohjelma, joka manipuloi toisia ohjelmia suoritusaikana'' \cite[s. 7]{hazzard2013}. 
+\emph{Metaohjelmoinnilla} tarkoitetaan klassisen määritelmän mukaan sellaisen tietokoneohjelman tekemistä, joka kirjoittaa uusia tietokoneohjelmia \cite[s. 6]{hazzard2013}. Tämä on kuitenkin melko yksinkertaistettu määritelmä, eikä metaohjelmointia ole helppo määritellä tarkasti. Toinen yleinen määritelmä esittää metaohjelmoinnin olevan ''tietokoneohjelma, joka manipuloi toisia ohjelmia suoritusaikana'' \cite[s. 7]{hazzard2013}. 
 
-Tärkeä osa metaohjelmointia on ohjelman suoritusaikainen tilansa tarkastelu ja muuntelu eli reflektio. Reflektioon kuuluu käsite introspektio, jolla tarkoitetaan suoritusaikaista muistissa olevien olioiden tarkastelua \cite{dive-into-python}.
+Tärkeä osa metaohjelmointia on ohjelman suoritusaikainen tilansa tarkastelu ja muuntelu eli \emph{reflektio}. Reflektioon kuuluu käsite \emph{introspektio}, jolla tarkoitetaan suoritusaikaista muistissa olevien olioiden tarkastelua \cite{dive-into-python}.
 
-Tässä seminaarityössä tarkastellaan Python-ohjelmointikielen tarjoamia työkaluja metaohjelmointiin. Alussa käydään läpi Python-kielen perusteita, ja tämän jälkeen tutustutaan metaohjelmointiin Python-kielellä. Metaohjelmoinnista tarkastellaan lähinnä suoritusaikaista metaohjelmointia. 
+Tässä seminaarityössä tarkastellaan Python-ohjelmointikielen tarjoamia työkaluja metaohjelmointiin. Luvussa 2 käydään läpi Python-kielen perusteita. Luvussa 3 käsitellään metaohjelmointia Python-kielellä. Metaohjelmoinnista tarkastellaan lähinnä suoritusaikaista metaohjelmointia. 
 
 
 
@@ -180,7 +162,7 @@ Tässä luvussa käydään läpi Python-kielen perusteita ja metaohjelmoinnin ka
 
 \subsection{Syntaksi}
 
-Python ohjelma koostuu loogisista riveistä, jotka ovat yhden tai useamman fyysisen rivin mittaisia \cite[s. 33]{martelli2006python}. Loogisten rivien päättämiseen ei käytetä mitään merkkiä. Rivien sisennyksen perusteella erotetaan ohjelmakoodin lohkot toisistaan. Suositeltu tapa sisentää on käyttää ensimmäisen tason sisentämiseen 4 välilyöntiä ja seuraavaan 8 ja niin edelleen \cite{pep8}. 
+Python-ohjelma koostuu loogisista riveistä, jotka ovat yhden tai useamman fyysisen rivin mittaisia \cite[s. 33]{martelli2006python}. Loogisten rivien päättämiseen ei käytetä mitään merkkiä. Rivien sisennyksen perusteella erotetaan ohjelmakoodin lohkot toisistaan. Suositeltu tapa sisentää on käyttää ensimmäisen tason sisentämiseen 4 välilyöntiä ja seuraavaan 8 ja niin edelleen \cite{pep8}. 
 
 Pythonissa on 30 avainsanaa (keyword), jotka ovat kielen varattuja sanoja. Näitä ovat esimerkiksi funktio \verb|print| ja kielen rakenteissa käytetyt sanat kuten \verb|if|, \verb|and| ja \verb|class|. Pythonin standardikirjasto koostuu sisäänrakennettujen funktioiden lisäksi kokoelmasta eri tarkoituksiin soveltuvia moduuleita (module), jotka pitää tarvittaessa tuoda erikseen osaksi suoritettavaa ohjelmaa komennolla \verb|import|.
 
@@ -188,7 +170,7 @@ Pythonissa on 30 avainsanaa (keyword), jotka ovat kielen varattuja sanoja. Näit
 
 Python on dynaamisesti tyypitetty kieli. Muuttujien arvon tyyppiä ei tarvitse eksplisiittisesti määrittää, vaan tyyppi määräytyy sen perusteella minkälainen arvo muuttujaan sijoitetaan. Python on lisäksi dynaaminen kieli, eli muuttujan sisältämää arvoa voidaan muokata vapaasti ajon aikana. Muuttujan arvoa voidaan vaihtaa sijoittamalla siihen uusi arvo. Uuden arvon ei tarvitse olla saman tyyppinen kuin muuttujan vanha arvo, vaan muutujan tyyppiä voidaan vaihtaa sijoittamalla siihen eri tyyppinen arvo. Listaus \ref{lst:ex1} sisältää yksinkertaisen esimerkin Python-kielen syntaksista. Rivillä 1 asetetaan muuttujan \verb|a| arvoksi merkkijono ''\verb|Hello world!|'', joka tulostetaan rivillä 2. Rivillä 5 tulostetaan muuttujassa \verb|a| olevan merkkijonon pituus.
 
-\begin{listing}
+\begin{listing}[ht]
     \inputminted[linenos,frame=single,framesep=10pt]{python}{code/foo.py}
     \caption{Yksinkertainen esimerkki Python-kielen syntaksista.}
     \label{lst:ex1}
@@ -207,12 +189,11 @@ Sekvenssit ovat iteroitavia (iterable) olioita, eli ne kykenevät palauttamaan j
 
 \subsection{Kehitelmät}
 
-Listakehitelmä (list comprehension) on matemaatiikan joukkojen määrittelyn merkintätavan pohjalta luotu syntaksi listan määrittelyyn olemassa olevien listojen pohjalta. Pythoniin on kehitetty myös listakehitelmän syntaksiin perustuvat joukkokehitelmä (set comprehension) ja sanakirjakehitelmä (dictionary comprehension). Nämä kaikki kehitelmät ovat helppoja tapoja luoda lista-, joukko- tai sanakirjaolioita.
+\emph{Listakehitelmä} (list comprehension) on matemaatiikan joukkojen määrittelyn merkintätavan pohjalta luotu syntaksi listan määrittelyyn olemassa olevien listojen pohjalta. Pythoniin on kehitetty myös listakehitelmän syntaksiin perustuvat joukkokehitelmä (set comprehension) ja sanakirjakehitelmä (dictionary comprehension). Nämä kaikki kehitelmät ovat helppoja tapoja luoda lista-, joukko- tai sanakirjaolioita.
 
-Esimerkkejä listakehitelmän käytöstä sekä joidenkin Python-kielen funktioiden käytöstä on listauksessa \ref{lst:ex_listakehis}. Funktio \verb|range| palauttaa Python 2:ssa listan ja Python 3:ssa generaattoriolion, jota voidaan käyttää listan tapaan. Funktio \verb|all| tarkastaa kaikkien listan (tai muun iteroitavan olion) totuusarvon. Pythonissa kaikki sisäänrakennettujen tietotyyppien oliot voidaan evaluoida totuusarvoina, jolloin lukujen tapauksessa aina luku ''0'' evaluoituu epätodeksi ja muut luvut todeksi.
+Esimerkkejä listakehitelmän käytöstä sekä joidenkin Python-kielen funktioiden käytöstä on listauksessa \ref{lst:ex_listakehis}. Rivillä 1 käytetty funktio \verb|range| palauttaa Python 2:ssa listan ja Python 3:ssa generaattoriolion, jota voidaan käyttää listan tapaan. Rivillä 4 luodaan lista, joka sisältää lukujen neliöitä. Rivillä 8 suodatetaan edellisellä rivillä luodusta listasta pois kaikki alkiot, joiden merkkijonoesitykset eivät koostu pelkästään kirjaimista. Rivillä 12 lasketaan alkulukuja väliltä 2--50. Funktio \verb|all| tarkastaa kaikkien listan (tai muun iteroitavan olion) totuusarvon. Pythonissa kaikki sisäänrakennettujen tietotyyppien oliot voidaan evaluoida totuusarvoina, jolloin lukujen tapauksessa aina luku ''0'' evaluoituu epätodeksi ja muut luvut todeksi.
 
-% TODO: Selosta esimerkki
-\begin{listing}
+\begin{listing}[ht]
     \inputminted[linenos,frame=single,framesep=10pt]{python}{code/luvut.py}
     \caption{Esimerkki listakehitelmistä ja funktion range käytöstä.}
     \label{lst:ex_listakehis}
@@ -229,7 +210,7 @@ Kahdella alaviivalla metodin nimen alussa ja lopussa merkitään luokan ''maagis
 
 Moniperinnästä on esimerkki listauksessa \ref{lst:ex_moniperinta}. Esimerkissä määritellään ensin luokka \verb|MyClassA|, joka sisältää metodin \verb|a|. Sen jälkeen riviltä 5 alkaen määritellään luokka \verb|MyClassB|, joka sisältää metodin \verb|b|. Rivillä 9 määritellään luokka \verb|MyClassC|, joka perii molemmat aiemmin määritellyt luokat ja sisältää metodin \verb|c|. Metodi \verb|c| kutsuu yläluokkien metodeita \verb|a| ja \verb|b|. Rivillä 16 kutsutaan luokasta \verb|MyClassC| luodun olion metodia \verb|c|, joka tulostaa rivit ''foo'' ja ''bar''.
 
-\begin{listing}
+\begin{listing}[ht]
 \begin{minted}[linenos,frame=single,framesep=10pt]{python}
 class MyClassA(object):
   def a(self):
@@ -254,32 +235,25 @@ olio.c()
     \label{lst:ex_moniperinta}
 \end{listing}
 
+Jos luokka perii useammalta yläluokalta attribuutteja, joilla on sama nimi, perintäjärjestys vaikuttaa siihen, mikä näistä periytyy uudelle luokalle. Yläluokkien metodeja voidaan kutsua \verb|super|-funktiolla.
 
 %%%%%%%%%%%%%%%%%%%
-\section{Metaohjelmointi Pythonilla}
+\section{Pythonin metaohjelmointipiirteet}
 %%%%%%%%%%%%%%%%%%%
 
-% TODO: Parempi otsikko
-
-Metaohjelmointi on Pythonilla hyvin luontevaa, koska olioita voidaan tutkailla ja yleensä muokata suoritusaikana vapaasti, ja niistä saadaan paljon metatietoa Pythonin peruskirjaston työkaluilla.
-
-% TODO: assert
+Metaohjelmointi on Pythonilla luontevaa, koska olioita voidaan tutkailla ja yleensä muokata suoritusaikana vapaasti, ja niistä saadaan paljon metatietoa Pythonin peruskirjaston työkaluilla.
 
 \subsection{Reflektio}
 
-
-% TODO: Esimerkki luokan metodin ylikirjoittamisesta
-
-Olion luokka saadaan kutsumalla \verb|type|:ä niin, että parametrina on olio, jonka luokka halutaan selvittää \cite{dive-into-python}. 
+Tarkasteltaessa suoritusaikana oliota, sen luokka saadaan kutsumalla \verb|type|:ä niin, että parametrina on olio, jonka luokka halutaan selvittää \cite{dive-into-python}. 
 
 Funktio \verb|dir| palauttaa listan olion attribuuteista, joihin kuuluu myös olion metodit. Funktio \verb|getattr| ottaa parametrina merkkijonon ja palauttaa parametrin nimisen attribuutin. Tällöin voidaan esimerkiksi kutsua metodeja oliosta, jonka rakennetta ei tunnetta vielä käännösvaiheessa \cite{dive-into-python}. Funktiolla \verb|isinstance| voidaan tarkistaa, onko joku olio tietyn tyyppinen. 
 
 Olion lyhyen sanallisen kuvauksen saa suoritusaikana haettua sen \verb|__doc__| -attribuutista. Kuvaus on koodissa oliolle annettu \emph{docstring}-kuvailu, joka on Pythonissa tyypillinen tapa kuvailla tekstinä ohjelman komponentteja.
 
-Olioita, luokkia ja funktioita voidaan muokata suoritusaikana melko vapaasti. Esimerkki peruskirjaston \verb|dir| funktion korvaamisesta omalla funktiolla on listauksessa \ref{lst:ex_intro2}. Esimerkin oma funktio palauttaa sille annetut argumentit tekemättä niille mitään. Tämänkaltaisesta kirjastojen ja moduuleiden osien suoritusaikaisesta muokkaamisesta käytetään nimeä ''monkey patching''.
+Olioita, luokkia ja funktioita voidaan muokata suoritusaikana melko vapaasti. Esimerkki standardikirjaston \verb|dir| funktion korvaamisesta omalla funktiolla on listauksessa \ref{lst:ex_intro2}. Esimerkin oma funktio \verb|x| palauttaa sille annetut argumentit tekemättä niille mitään. Tämänkaltaisesta kirjastojen ja moduuleiden osien suoritusaikaisesta muokkaamisesta käytetään nimeä ''monkey patching''.
 
-% käytä .getattr('print') ?
-\begin{listing}
+\begin{listing}[htb]
     \inputminted[linenos,frame=single,framesep=10pt]{python}{code/introspektio2.py}
     \caption{Standardikirjaston funktion korvaaminen omalla funktiolla.}
     \label{lst:ex_intro2}
@@ -289,7 +263,7 @@ Pythonin standardikirjaston inspect-moduuli tarjoaa työkaluja olioiden tilan tu
 
 Listauksessa \ref{lst:ex_inspect_olio} tarkastellaan inspect-moduulilla aiemmin listauksessa \ref{lst:ex_moniperinta} luotua oliota nimeltä \verb|olio|. Rivillä 1 tulostetaan olion \verb|olio| \verb|c|-metodin lähdekoodi. Rivellä 6 ja 9 selvitetään onko parametrinä annettu olio funktio tai metodi. Rivillä 12 käytetty \verb|inspect.getmro| palauttaa luokan kaikki yläluokat perintäjärjestyksessä.
 
-\begin{listing}
+\begin{listing}[htb]
 \begin{minted}[linenos,frame=single,framesep=10pt]{python}
 print(inspect.getsource(olio.c))
 #      def c(self):
@@ -313,12 +287,40 @@ print(inspect.getmro(type(olio)))
     \label{lst:ex_inspect_olio}
 \end{listing}
 
-Metaluokan metodeilla \verb|__instancecheck__(self, instance)| ja \\\lstinline|__subclasscheck__(self, subclass)| voidaan vaikuttaa siihen miten ajoaikainen reflektio käyttäytyy \cite{magic-methods, Python-docs}. Näistä ensimmäistä käytetään yliajamaan (override) Pythonin sisäänrakennetun funktion \verb|isinstance| toimintaa, joka kertoo onko instanssi muodostettu tietystä luokasta. Jälkimmäinen yliajaa sisäänrakennetun funktion \verb|issubclass| toimintaa ja kertoo onko luokka toisen luokan aliluokka. 
+\subsection{Introspektion muokkaaminen}
+
+Todennäköisesti harvoin hyödyllinen ominaisuus on Pythonissa on se, että voidaan suoritusaikana oliokohtaisesti vaikuttaa siihen, miten olioiden introspektio toimii.
+
+Metaluokkien avulla siis luodaan luokkia. Metaluokan metodeilla \\\verb|__instancecheck__(self, instance)| ja \\\lstinline|__subclasscheck__(self, subclass)| voidaan vaikuttaa siihen miten luokasta muodostettujen olioiden tarkastelu käyttäytyy \cite{magic-methods, Python-docs}. Näistä ensimmäistä käytetään yliajamaan (override) Pythonin sisäänrakennetun funktion \verb|isinstance| toimintaa, joka kertoo onko instanssi muodostettu tietystä luokasta. Jälkimmäinen yliajaa sisäänrakennetun funktion \verb|issubclass| toimintaa ja kertoo onko luokka toisen luokan aliluokka. 
 
 \subsection{Dynaamiset luokat}
 
-Luokkia voidaan muokata ohjelman suoritusaikana, jolloin vaikutus ulottuu kaikkiin jo luotuihin luokan instansseihin. On myös mahdollista luoda uusia luokkia dynaamisesti ohjelman suoritusaikana \verb|type|-metaluokan avulla \cite{MetaprogP3}. Kutsumalla \verb|type|:ä kolmella parametrilla saadaan paluuarvona luokka. Parametrit ovat järjestyksessä luokan nimi, perittävät luokat ja sanakirja-tyyppinen muuttuja luokan sisällöstä \cite{MetaprogP3}. Esimerkiksi tyhjä luokka voidaan luoda dynaamisesti lausekkeella \verb|C = type('C', (), {})|.
+Luokkia voidaan muokata ohjelman suoritusaikana, jolloin vaikutus ulottuu kaikkiin jo luotuihin luokan instansseihin. On myös mahdollista luoda uusia luokkia dynaamisesti ohjelman suoritusaikana \verb|type|-funktion avulla, joka toimii myös metaluokkana \cite{MetaprogP3}. Kutsumalla \verb|type|:ä kolmella parametrilla saadaan paluuarvona luokka. Parametrit ovat järjestyksessä luokan nimi, perittävät luokat ja sanakirja-tyyppinen muuttuja luokan sisällöstä \cite{MetaprogP3}. 
 
+Esimerkki luokan luomisesta dynaamisesti ajon aikana on listauksessa \ref{lst:ex_dyn_class}. Esimerkin rivillä 1 määritellään funktio \verb|dynamic_c|. Rivillä 5 luodaan \verb|type|-funktiolla uusi luokka. Parametreinä \verb|type|-funktiolle annetaan luokan nimi, perittävät luokat sekä luokan attribuutit. Perittävät luokat \verb|MyClassA| ja \verb|MyClassB| on määritelty listauksessa \ref{lst:ex_moniperinta}. Rivillä 13 luodaan olio tehdystä luokasta ja seuraavalla rivillä kutsutaan sen metodia \verb|c|.
+
+\begin{listing}[htb]
+\begin{minted}[linenos,frame=single,framesep=10pt]{python}
+def dynamic_c(self):
+  self.a()
+  self.b()
+
+DynClassC = type(
+  'DynClassC',
+  (MyClassA, MyClassB),
+  {'__doc__':
+   "Dynaaminen moniperinta",
+   'c': dynamic_c
+  })
+
+olio2 = DynClassC()
+olio2.c()
+# foo
+# bar
+\end{minted}
+    \caption{Luokan luominen dynaamisesti ajon aikana.}
+    \label{lst:ex_dyn_class}
+\end{listing}
 
 \subsection{Koodin kääntäminen suoritusaikana}
 
@@ -326,7 +328,7 @@ Pythonissa on sisäänrakennetut funktiot \verb|compile|, \verb|eval| ja \verb|e
 
 Esimerkki suoritusaikaisesta koodin kääntämisestä on listauksessa \ref{lst:ex_compile}. Esimerkin rivillä 1 luodaan muuttuja, joka sisältää käännettävän koodin merkkijonona. Rivillä 2 käännetään koodi merkkijonosta tavukoodiksi käyttämällä funktiota \verb|compile|, jonka parametrit ovat käännettävä koodi, koodin sisältävän tiedoston nimi ja käännöstila (mode). Nimenä käytetään merkkijonoa \verb|'<string>'| tarkoittamaan, että koodia ei ole luettu tiedostosta. Käännöstila \verb|'single'| kertoo, että käännetään yksi lause (statement). Rivi 4 tulostaa \verb|code_obj| -muuttujan merkkijonoesityksen. Rivillä 7 suoritetaan tavukoodi muuttujasta \verb|code_obj|.
 
-\begin{listing}
+\begin{listing}[htb!]
     \inputminted[linenos,frame=single,framesep=10pt]{python}{code/dynamichello.py}
     \caption{Esimerkki Python-lauseen kääntämisestä tavukoodiksi ohjelman suoritusaikana ja käännetyn koodin ajamisesta \cite{codeobjects}.}
     \label{lst:ex_compile}
@@ -335,39 +337,60 @@ Esimerkki suoritusaikaisesta koodin kääntämisestä on listauksessa \ref{lst:e
 
 \subsection{Tavukoodin tarkastelu ja muokkaus}
 
-Standardikirjaston \verb|dis|-moduulilla voidaan tutkia Python-tavukoodia. Listauksessa \ref{lst:tavukoodi} on esimerkki tavukoodin tulostamisesta \verb|dis|-moduulin \verb|dis|-metodilla sekä tulostettu tavukoodi. Tavukoodi on tulostettu Python 2:lla ja se on eri näköinen suoritettaessa esimerkki Python 3:lla.
+Standardikirjaston dis-moduulilla voidaan tutkia Python-tavukoodia. Listauksessa \ref{lst:tavukoodi} on esimerkki tavukoodin tulostamisesta dis-moduulin \verb|dis|-metodilla sekä tulostettu tavukoodi. Esimerkissä käytetty \verb|code_obj| on määritelty listauksessa \ref{lst:ex_compile}. Tavukoodi on tulostettu Python 2:lla ja se on eri näköinen suoritettaessa esimerkki Python 3:lla.
 
-% TODO: selitä esimerkki paremmin auki (vertaisarvio)
-
-\begin{listing}
+\begin{listing}[htb!]
     \inputminted[linenos,frame=single,framesep=10pt]{python}{code/tavukoodi.py}
     \caption{Python-tavukoodin tarkastelu dis-moduulilla.}
     \label{lst:tavukoodi}
 \end{listing}
 
-Moduuli \verb|parser| antaa rajapinnan Python-kääntäjän sisäiseen jäsennyspuuhun ja mahdollistaa sen muokkaamisen. Tämän moduulin lisäämisen jälkeen on kuitenkin standardikirjastoon lisätty \verb|ast|-moduuli, joka mahdollistaa kääntäjän abstraktin syntaksipuun (abstract syntax tree) luomisen annetun ohjelmakoodin perusteella ja sen muokkaamisen. Funktiolle \verb|compile| voidaan antaa parametrina muokatun AST-puun sisältävä \verb|AST|-luokan olio ja kääntää se tavukoodiksi.
+\subsection{Abstraktin syntaksipuun käsittely}
 
-% TODO Kalvojen AST-asiaa omaan alilukuun
+Moduuli parser antaa rajapinnan Python-kääntäjän sisäiseen jäsennyspuuhun ja mahdollistaa sen muokkaamisen. Tämän moduulin lisäämisen jälkeen on kuitenkin standardikirjastoon lisätty ast-moduuli, joka mahdollistaa kääntäjän abstraktin syntaksipuun (abstract syntax tree, AST) luomisen annetun ohjelmakoodin perusteella ja sen muokkaamisen \cite{Green}. Funktiolle \verb|compile| voidaan antaa parametrina muokatun AST-puun sisältävä \verb|AST|-luokan olio ja kääntää se tavukoodiksi.
 
-% TODO AST-esimerkkiä: http://www.blueprintforge.com/blog/2012/02/27/static-modification-of-python-with-python-the-ast-module/
+Listauksessa \ref{lst:ast} on esimerkki AST-puun luomisesta ja tarkastelusta. Esimerkin rivillä 3 luodaan yksinkertaisesta Python-lauseesta AST-puu \verb|ast.parse|-funktiolla. Rivillä 7 tulostetaan puun rakenne merkkijonona. Riveillä 13 ja 14 ''kuljetaan'' läpi puun kaikki solmut ja tulostetaan kunkin solmun luokka.
 
-% TODO koodi -> AST-puu -> muokkaus -> koodi : http://code.activestate.com/recipes/578353-code-to-source-and-back/
+\begin{listing}[htb]
+\begin{minted}[linenos,frame=single,framesep=10pt]{python}
+import ast
+
+tree = ast.parse("print('hello world')")
+exec(compile(tree, filename="<ast>", mode="exec"))
+# hello world
+
+print(ast.dump(tree))
+# Module( body = [Print(
+#     dest = None,
+#     values = [Str(s = 'hello world')],
+#     nl = True)])
+
+for node in ast.walk(tree):
+  print(type(node))
+# <class '_ast.Module'>
+# <class '_ast.Print'>
+# <class '_ast.Str'>
+\end{minted}
+    \caption{Abstraktin syntaksipuun tarkastelu ast-moduulilla.}
+    \label{lst:ast}
+\end{listing}
+
+AST-puita voidaan tarkastella myös \verb|ast.NodeVisitor|-luokan avulla. Moduuli tarjoaa apufunktioita puun solmujen tarkasteluun \cite{Green}.
+
+AST-puun muokkaus onnistuu perimällä \verb|ast.NodeTransformer|-luokka, yliajamalla sen solmuja käsitteleviä metodeita ja kutsumalla luokasta luodun olion \verb|visit|-metodia \cite{Green}.
 
 
 \subsection{Käännösaikainen metaohjelmointi}
 
-Käännösaikaista metaohjelmointia ei ole suoraan tuettu Pythonissa. Mallien (template) käyttö Python-koodin luomiseen on mahdollista ajamalla mallia käsittelevä ohjelma ja tämän jälkeen kääntää mallin pohjalta luotu koodi. Tähän voidaan käyttää standardikirjastosta löytyvää yksinkertaista, mutta laajennettavaa string-moduulin \verb|Template|-luokkaa tai jotakin Pythonin lukuisista mallimoottoreista (template engine) \cite{Templating}.
+Käännettävän ohjelman käännösaikaista metaohjelmointia ei ole suoraan tuettu Pythonissa. Mallien (template) käyttö Python-koodin luomiseen on mahdollista ajamalla mallia käsittelevä ohjelma ja tämän jälkeen kääntää mallin pohjalta luotu koodi. Tähän voidaan käyttää standardikirjastosta löytyvää yksinkertaista, mutta laajennettavaa string-moduulin \verb|Template|-luokkaa tai jotakin Pythonin lukuisista mallimoottoreista (template engine) \cite{Templating}.
 
 Käännösaikainen metaohjelmointi on myös lisätty kahteen Pythonista jatkokehitettyyn kieleen, Mythoniin \cite{mython} ja Convergeen \cite{tratt05}. Mython-kieltä voidaan kääntää Python-tavukoodiksi, mutta Converge-kielestä käännettyä koodia suoritetaan kielen omalla virtuaalikoneella.
 
-% TODO: Luvun loppuun yhteenvetokappale kokoamaan asiaa
-
-%%%%%%%%%%%%%%%%%%%%%
 \section{Yhteenveto}
-%%%%%%%%%%%%%%%%%%%%%
 
-%Yhteenveto.
+Python-kielellä suoritusaikainen suoritettavan ohjelman tarkastelu eli reflektio on helppoa. Python-virtuaalikoneen muistissa olevia olioita voidaan tutkia ja muokata suoritusaikana hyvin vapaasti. Laajasta standardikirjastosta on tässä apua. 
 
+Uusia luokkia on mahdollista luoda suoritusaikana \verb|type|-funktiolla. Tiedostosta tuotua tai suoritusaikana luotua Python-koodia voidaan kääntää funktiolla \verb|compile| ja käännettyä koodia voidaan ajaa funktiolla \verb|exec|. Abstraktin syntaksipuun muokkaus mahdollistaa tehokkaan tavan tehdä metaohjelmointia suoritusaikana käännettävälle koodille.
 
 \pagebreak
 
